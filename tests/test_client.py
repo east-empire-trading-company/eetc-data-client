@@ -16,8 +16,9 @@ class TestEETCDataClient(unittest.TestCase):
             raise self.failureException(msg) from e
 
     def setUp(self):
+        # set up a custom method for checking pandas DataFrame equality
         self.addTypeEqualityFunc(pd.DataFrame, self.assertDataFrameEqual)
-        self.client = EETCDataClient("test_api_key")
+        self.eetc_data_client = EETCDataClient("test_api_key")
 
     def test_get_price_data(self):
         # given
@@ -62,7 +63,7 @@ class TestEETCDataClient(unittest.TestCase):
             "eetc_data_client.client.EETCDataClient._send_http_request",
             return_value=mock_response,
         ):
-            data = self.client.get_price_data(symbol)
+            data = self.eetc_data_client.get_price_data(symbol)
 
         # then
         self.assertEqual(data, expected)
@@ -108,7 +109,7 @@ class TestEETCDataClient(unittest.TestCase):
             "eetc_data_client.client.EETCDataClient._send_http_request",
             return_value=mock_response,
         ):
-            data = self.client.get_price_data(symbol, as_json=True)
+            data = self.eetc_data_client.get_price_data(symbol, as_json=True)
 
         # then
         self.assertEqual(expected, data)
