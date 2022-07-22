@@ -126,7 +126,7 @@ class EETCDataClient:
         :param from_date: Earliest date in string format "yyyy-mm-dd"
         :param to_date: Latest date in string format "yyyy-mm-dd"
         :param month: Specific month for which the caller wants data.
-        :param month: Specific quarter for which the caller wants data.
+        :param quarter: Specific quarter for which the caller wants data.
         :param as_json: Indicates if caller wants data returned as JSON. False
         by default, if False, it will return the data as a pandas DataFrame.
         :return: Historical Macroeconomic data as a pandas DataFrame.
