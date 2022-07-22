@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=63.2", "pandas>=1.4.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "eetc_data_client"
+version = "0.0.1"
+authors = [
+  { name="East Empire Trading Company", email="eastempiretradingcompany2019@gmail.com" },
+  { name="Stefan Delic", email="einfach.jung1@gmail.com"},
+  { name="Milos Dovedan", email="dovedanmilosh@gmail.com" },
+]
+maintainers = [
+  { name="East Empire Trading Company", email="eastempiretradingcompany2019@gmail.com" },
+  { name="Stefan Delic", email="einfach.jung1@gmail.com"},
+  { name="Milos Dovedan", email="dovedanmilosh@gmail.com" },
+]
+description = "EETC Data Hub Client Library"
+readme = "README.md"
+license = { file="LICENSE" }
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/east-empire-trading-company/eetc-data-client"
+"Bug Tracker" = "https://github.com/east-empire-trading-company/eetc-data-client/issues"
