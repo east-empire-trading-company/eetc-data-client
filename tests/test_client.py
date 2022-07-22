@@ -5,7 +5,7 @@ from unittest.mock import MagicMock
 import pandas as pd
 from pandas._testing import assert_frame_equal
 
-from eetc_data_client.client import EETCDataClient
+from src.eetc_data_client.client import EETCDataClient
 
 
 class TestEETCDataClient(unittest.TestCase):
