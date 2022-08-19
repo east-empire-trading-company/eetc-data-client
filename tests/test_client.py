@@ -60,7 +60,7 @@ class TestEETCDataClient(unittest.TestCase):
 
         # when
         with mock.patch(
-            "eetc_data_client.client.EETCDataClient._send_http_request",
+            "src.eetc_data_client.client.EETCDataClient._send_http_request",
             return_value=mock_response,
         ):
             data = self.eetc_data_client.get_price_data(symbol)
@@ -106,7 +106,7 @@ class TestEETCDataClient(unittest.TestCase):
 
         # when
         with mock.patch(
-            "eetc_data_client.client.EETCDataClient._send_http_request",
+            "src.eetc_data_client.client.EETCDataClient._send_http_request",
             return_value=mock_response,
         ):
             data = self.eetc_data_client.get_price_data(symbol, as_json=True)
@@ -368,7 +368,7 @@ class TestEETCDataClient(unittest.TestCase):
 
         # when
         with mock.patch(
-            "eetc_data_client.client.EETCDataClient._send_http_request",
+            "src.eetc_data_client.client.EETCDataClient._send_http_request",
             return_value=mock_response,
         ):
             data = self.eetc_data_client.get_fundamentals_data(
@@ -421,7 +421,7 @@ class TestEETCDataClient(unittest.TestCase):
 
         # when
         with mock.patch(
-            "eetc_data_client.client.EETCDataClient._send_http_request",
+            "src.eetc_data_client.client.EETCDataClient._send_http_request",
             return_value=mock_response,
         ):
             data = self.eetc_data_client.get_macroeconomic_data(
@@ -684,7 +684,7 @@ class TestEETCDataClient(unittest.TestCase):
 
         # when
         with mock.patch(
-            "eetc_data_client.client.EETCDataClient._send_http_request",
+            "src.eetc_data_client.client.EETCDataClient._send_http_request",
             return_value=mock_response,
         ):
             data = self.eetc_data_client.get_fundamentals_data(
@@ -734,7 +734,7 @@ class TestEETCDataClient(unittest.TestCase):
 
         # when
         with mock.patch(
-            "eetc_data_client.client.EETCDataClient._send_http_request",
+            "src.eetc_data_client.client.EETCDataClient._send_http_request",
             return_value=mock_response,
         ):
             data = self.eetc_data_client.get_macroeconomic_data(
