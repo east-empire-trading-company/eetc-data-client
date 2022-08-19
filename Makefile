@@ -12,9 +12,11 @@ reformat_code:
 	black .
 
 publish_package_on_pypi_test:
+	rm -rf dist
 	python -m build
 	python -m twine upload --repository testpypi dist/*
 
 publish_package_on_pypi:
+	rm -rf dist
 	python -m build
 	python -m twine upload --repository pypi dist/*
