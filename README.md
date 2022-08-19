@@ -14,11 +14,6 @@ client = EETCDataClient(api_key="getYourApiKeyFromUsOnRequest")
 
 aapl_price_data_df = client.get_price_data("AAPL")
 print(aapl_price_data_df.head())
-
-china_exports_data = client.get_macroeconomic_data(
-    "Exports in USD - China", frequency="Monthly",
-)
-print(china_exports_data.head())
 ```
 
 ```python
