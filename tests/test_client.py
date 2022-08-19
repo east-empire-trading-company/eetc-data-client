@@ -371,8 +371,11 @@ class TestEETCDataClient(unittest.TestCase):
             "eetc_data_client.client.EETCDataClient._send_http_request",
             return_value=mock_response,
         ):
-            data = self.eetc_data_client.get_fundamentals_data(symbol,
-                                                               frequency, year)
+            data = self.eetc_data_client.get_fundamentals_data(
+                symbol,
+                frequency=frequency,
+                year=year,
+            )
 
         # then
         self.assertEqual(data, expected)
