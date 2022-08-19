@@ -65,7 +65,10 @@ class EETCDataClient:
         if as_json:
             return response_data
 
-        return pd.json_normalize(response_data)
+        df = pd.json_normalize(response_data)
+        df = df.sort_values(by=["date"])
+
+        return df
 
     def get_fundamentals_data(
         self,
