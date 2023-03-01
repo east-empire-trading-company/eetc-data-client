@@ -12,6 +12,9 @@ class EETCDataClient:
         # TODO check API Key validity during __init__ & raise exception
 
     def _send_http_request(self, url: str, params: dict) -> Response:
+        if params is None:
+            params = {}
+
         response = requests.get(
             url,
             params=params,
@@ -111,14 +114,12 @@ class EETCDataClient:
 
         return pd.json_normalize(response_data)
 
-    def get_macroeconomic_data(
+    def get_indicator_data(
         self,
         name: str,
         frequency: str = None,
         from_date: str = None,
         to_date: str = None,
-        month: int = None,
-        quarter: int = None,
         as_json=False,
     ) -> Union[pd.DataFrame, List[Dict]]:
         """
@@ -128,14 +129,12 @@ class EETCDataClient:
         :param frequency: "Yearly", "Quarterly", "Monthly", "Weekly", "Daily".
         :param from_date: Earliest date in string format "yyyy-mm-dd"
         :param to_date: Latest date in string format "yyyy-mm-dd"
-        :param month: Specific month for which the caller wants data.
-        :param quarter: Specific quarter for which the caller wants data.
         :param as_json: Indicates if caller wants data returned as JSON. False
         by default, if False, it will return the data as a pandas DataFrame.
         :return: Historical Macroeconomic data as a pandas DataFrame.
         """
 
-        url = f"{self.base_url}/macroeconomic/?name={name}"
+        url = f"{self.base_url}/indicators/?name={name}"
         params = {}
 
         # add optional query params
@@ -148,12 +147,6 @@ class EETCDataClient:
         if to_date:
             params["to_date"] = to_date
 
-        if month:
-            params["month"] = month
-
-        if quarter:
-            params["quarter"] = quarter
-
         # send the HTTP request to EETC Data Hub
         response = self._send_http_request(url, params)
 
@@ -163,4 +156,25 @@ class EETCDataClient:
         if as_json:
             return response_data
 
-        return pd.json_normalize(response_data)
+        df = pd.json_normalize(response_data)
+        df = df.sort_values(by=["date"])
+
+        return df
+
+    def get_indicators(self) -> Dict[str, List[str]]:
+        """
+        Get supported indicators grouped by frequency from EETC Data Hub via
+        REST API.
+
+        :return: List of indicator names grouped by frequency.
+        """
+
+        url = f"{self.base_url}/indicators/names/"
+
+        # send the HTTP request to EETC Data Hub
+        response = self._send_http_request(url, {})
+
+        # process and return response data
+        response_data = response.json()
+
+        return response_data

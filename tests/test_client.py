@@ -29,13 +29,11 @@ class TestEETCDataClient(unittest.TestCase):
                 {
                     "date": "2012-04-26T00:00:00Z",
                     "symbol": "AAPL",
-                    "source": "YahooFinance",
                     "open": 21.94,
                     "high": 21.95,
                     "low": 21.5,
                     "close": 21.7,
                     "volume": 536068400.0,
-                    "inserted_at": None,
                     "name": "Apple Inc.",
                 },
             ],
@@ -46,13 +44,11 @@ class TestEETCDataClient(unittest.TestCase):
                 {
                     "date": "2012-04-26T00:00:00Z",
                     "symbol": "AAPL",
-                    "source": "YahooFinance",
                     "open": 21.94,
                     "high": 21.95,
                     "low": 21.5,
                     "close": 21.7,
                     "volume": 536068400.0,
-                    "inserted_at": None,
                     "name": "Apple Inc.",
                 },
             ],
@@ -77,13 +73,11 @@ class TestEETCDataClient(unittest.TestCase):
                 {
                     "date": "2012-04-26T00:00:00Z",
                     "symbol": "AAPL",
-                    "source": "YahooFinance",
                     "open": 21.94,
                     "high": 21.95,
                     "low": 21.5,
                     "close": 21.7,
                     "volume": 536068400.0,
-                    "inserted_at": None,
                     "name": "Apple Inc.",
                 },
             ],
@@ -93,13 +87,11 @@ class TestEETCDataClient(unittest.TestCase):
             {
                 "date": "2012-04-26T00:00:00Z",
                 "symbol": "AAPL",
-                "source": "YahooFinance",
                 "open": 21.94,
                 "high": 21.95,
                 "low": 21.5,
                 "close": 21.7,
                 "volume": 536068400.0,
-                "inserted_at": None,
                 "name": "Apple Inc.",
             },
         ]
@@ -380,24 +372,19 @@ class TestEETCDataClient(unittest.TestCase):
         # then
         self.assertEqual(data, expected)
 
-    def test_get_macroeconomic_data(self):
+    def test_get_indicator_data(self):
         # given
         mock_response = MagicMock()
         mock_response.status_code = 200
         mock_response.json = MagicMock(
             return_value=[
                 {
-                    "year": 2020,
-                    "quarter": None,
-                    "month": None,
-                    "week": None,
                     "date": "2020-01-01T00:00:00Z",
                     "name": "US Real GDP",
                     "value": -3.4,
-                    "inserted_at": None,
                     "frequency": "Yearly",
-                }
-            ]
+                },
+            ],
         )
         name = "US Real GDP"
         frequency = "Yearly"
@@ -406,14 +393,9 @@ class TestEETCDataClient(unittest.TestCase):
         expected = pd.json_normalize(
             [
                 {
-                    "year": 2020,
-                    "quarter": None,
-                    "month": None,
-                    "week": None,
                     "date": "2020-01-01T00:00:00Z",
                     "name": "US Real GDP",
                     "value": -3.4,
-                    "inserted_at": None,
                     "frequency": "Yearly",
                 }
             ],
@@ -424,8 +406,11 @@ class TestEETCDataClient(unittest.TestCase):
             "src.eetc_data_client.client.EETCDataClient._send_http_request",
             return_value=mock_response,
         ):
-            data = self.eetc_data_client.get_macroeconomic_data(
-                name, frequency, from_date, to_date
+            data = self.eetc_data_client.get_indicator_data(
+                name,
+                frequency,
+                from_date,
+                to_date,
             )
 
         # then
@@ -688,27 +673,25 @@ class TestEETCDataClient(unittest.TestCase):
             return_value=mock_response,
         ):
             data = self.eetc_data_client.get_fundamentals_data(
-                symbol, frequency, year, as_json=True
+                symbol,
+                frequency,
+                year=year,
+                as_json=True,
             )
 
         # then
         self.assertEqual(expected, data)
 
-    def test_get_macroeconomic_data_as_json(self):
+    def test_get_indicator_data_as_json(self):
         # given
         mock_response = MagicMock()
         mock_response.status_code = 200
         mock_response.json = MagicMock(
             return_value=[
                 {
-                    "year": 2020,
-                    "quarter": None,
-                    "month": None,
-                    "week": None,
                     "date": "2020-01-01T00:00:00Z",
                     "name": "US Real GDP",
                     "value": -3.4,
-                    "inserted_at": None,
                     "frequency": "Yearly",
                 }
             ]
@@ -720,14 +703,9 @@ class TestEETCDataClient(unittest.TestCase):
 
         expected = [
             {
-                "year": 2020,
-                "quarter": None,
-                "month": None,
-                "week": None,
                 "date": "2020-01-01T00:00:00Z",
                 "name": "US Real GDP",
                 "value": -3.4,
-                "inserted_at": None,
                 "frequency": "Yearly",
             }
         ]
@@ -737,9 +715,197 @@ class TestEETCDataClient(unittest.TestCase):
             "src.eetc_data_client.client.EETCDataClient._send_http_request",
             return_value=mock_response,
         ):
-            data = self.eetc_data_client.get_macroeconomic_data(
+            data = self.eetc_data_client.get_indicator_data(
                 name, frequency, from_date, to_date, as_json=True
             )
+
+        # then
+        self.assertEqual(expected, data)
+
+    def test_get_indicators(self):
+        # given
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.json = MagicMock(
+            return_value={
+                "Daily": [
+                    "A/D - S&P500",
+                    "US - 10 Year Breakeven Inflation Rate",
+                    "US - 10 Year Treasury Yield",
+                    "US - 10 Year Treasury Yield minus 2 Year Treasury Yield",
+                    "US - 10-Year Breakeven Inflation Rate",
+                    "US - 2 Year Treasury Yield",
+                    "US - 5 Year Breakeven Inflation Rate",
+                    "US - Overnight Bank Funding Rate",
+                ],
+                "Monthly": [
+                    "CPI - EU",
+                    "CPI - Germany",
+                    "CPI - US",
+                    "Exports in USD - Brazil",
+                    "Exports in USD - Canada",
+                    "Exports in USD - China",
+                    "Exports in USD - France",
+                    "Exports in USD - Germany",
+                    "Exports in USD - India",
+                    "Exports in USD - Italy",
+                    "Exports in USD - Japan",
+                    "Exports in USD - United Arab Emirates",
+                    "Exports in USD - United Kingdom",
+                    "Exports in USD - United States",
+                    "Imports in USD - Brazil",
+                    "Imports in USD - Canada",
+                    "Imports in USD - China",
+                    "Imports in USD - France",
+                    "Imports in USD - Germany",
+                    "Imports in USD - India",
+                    "Imports in USD - Italy",
+                    "Imports in USD - Japan",
+                    "Imports in USD - United Arab Emirates",
+                    "Imports in USD - United Kingdom",
+                    "Imports in USD - United States",
+                    "Inflation YoY - EU",
+                    "Inflation YoY - Germany",
+                    "Inflation YoY - US",
+                    "NMI",
+                    "NMI - Backlog of Orders",
+                    "NMI - Business Activity",
+                    "NMI - Employment",
+                    "NMI - Inventories",
+                    "NMI - Inventory Sentiment",
+                    "NMI - New Export Orders",
+                    "NMI - New Orders",
+                    "NMI - Prices",
+                    "NMI - Supplier Deliveries",
+                    "PMI",
+                    "PMI - Backlog of Orders",
+                    "PMI - Customer Inventories",
+                    "PMI - Employment",
+                    "PMI - Imports",
+                    "PMI - Inventories",
+                    "PMI - New Export Orders",
+                    "PMI - New Orders",
+                    "PMI - Prices",
+                    "PMI - Production",
+                    "PMI - Supplier Deliveries",
+                    "US - Building Permits",
+                    "US - Empire State Manufacturing Current General Business Conditions",
+                    "US - Empire State Manufacturing Current New Orders",
+                    "US - Existing Home Sales",
+                    "US - Federal Funds Rate",
+                    "US - Housing Inventory Active Listings",
+                    "US - Housing Starts",
+                    "US - Personal Saving Rate",
+                    "US Consumer Sentiment Index",
+                ],
+                "Quarterly": [
+                    "US - Consumer Debt Payments as a percentage of Personal Income",
+                    "US - Hedge Fund Margin Loans",
+                    "US - House Price Index",
+                    "US - Margin Accounts",
+                    "US - Mortgage Payments as percentage of Personal Income",
+                    "US - Public Debt as percentage of GDP",
+                    "US - Real GDP Growth Rate",
+                    "US - Rental Vacancy Rate",
+                ],
+                "Yearly": ["US Real GDP"],
+            }
+        )
+        name = "US Real GDP"
+        frequency = "Yearly"
+        from_date = "2020-01-01"
+        to_date = "2020-12-30"
+
+        expected = {
+            "Daily": [
+                "A/D - S&P500",
+                "US - 10 Year Breakeven Inflation Rate",
+                "US - 10 Year Treasury Yield",
+                "US - 10 Year Treasury Yield minus 2 Year Treasury Yield",
+                "US - 10-Year Breakeven Inflation Rate",
+                "US - 2 Year Treasury Yield",
+                "US - 5 Year Breakeven Inflation Rate",
+                "US - Overnight Bank Funding Rate",
+            ],
+            "Monthly": [
+                "CPI - EU",
+                "CPI - Germany",
+                "CPI - US",
+                "Exports in USD - Brazil",
+                "Exports in USD - Canada",
+                "Exports in USD - China",
+                "Exports in USD - France",
+                "Exports in USD - Germany",
+                "Exports in USD - India",
+                "Exports in USD - Italy",
+                "Exports in USD - Japan",
+                "Exports in USD - United Arab Emirates",
+                "Exports in USD - United Kingdom",
+                "Exports in USD - United States",
+                "Imports in USD - Brazil",
+                "Imports in USD - Canada",
+                "Imports in USD - China",
+                "Imports in USD - France",
+                "Imports in USD - Germany",
+                "Imports in USD - India",
+                "Imports in USD - Italy",
+                "Imports in USD - Japan",
+                "Imports in USD - United Arab Emirates",
+                "Imports in USD - United Kingdom",
+                "Imports in USD - United States",
+                "Inflation YoY - EU",
+                "Inflation YoY - Germany",
+                "Inflation YoY - US",
+                "NMI",
+                "NMI - Backlog of Orders",
+                "NMI - Business Activity",
+                "NMI - Employment",
+                "NMI - Inventories",
+                "NMI - Inventory Sentiment",
+                "NMI - New Export Orders",
+                "NMI - New Orders",
+                "NMI - Prices",
+                "NMI - Supplier Deliveries",
+                "PMI",
+                "PMI - Backlog of Orders",
+                "PMI - Customer Inventories",
+                "PMI - Employment",
+                "PMI - Imports",
+                "PMI - Inventories",
+                "PMI - New Export Orders",
+                "PMI - New Orders",
+                "PMI - Prices",
+                "PMI - Production",
+                "PMI - Supplier Deliveries",
+                "US - Building Permits",
+                "US - Empire State Manufacturing Current General Business Conditions",
+                "US - Empire State Manufacturing Current New Orders",
+                "US - Existing Home Sales",
+                "US - Federal Funds Rate",
+                "US - Housing Inventory Active Listings",
+                "US - Housing Starts",
+                "US - Personal Saving Rate",
+                "US Consumer Sentiment Index",
+            ],
+            "Quarterly": [
+                "US - Consumer Debt Payments as a percentage of Personal Income",
+                "US - Hedge Fund Margin Loans",
+                "US - House Price Index",
+                "US - Margin Accounts",
+                "US - Mortgage Payments as percentage of Personal Income",
+                "US - Public Debt as percentage of GDP",
+                "US - Real GDP Growth Rate",
+                "US - Rental Vacancy Rate",
+            ],
+            "Yearly": ["US Real GDP"],
+        }
+
+        # when
+        with mock.patch(
+            "src.eetc_data_client.client.EETCDataClient._send_http_request",
+            return_value=mock_response,
+        ):
+            data = self.eetc_data_client.get_indicators()
 
         # then
         self.assertEqual(expected, data)
@@ -748,4 +914,4 @@ class TestEETCDataClient(unittest.TestCase):
         # given
         # when
         # then
-        pass
+        pass  # TODO implement test__send_http_request
