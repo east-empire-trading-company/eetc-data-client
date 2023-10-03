@@ -178,3 +178,26 @@ class EETCDataClient:
         response_data = response.json()
 
         return response_data
+
+    def get_companies(self, index: str = None) -> Dict[str, List[str]]:
+        """
+        Get supported companies from EETC Data Hub via REST API.
+
+        :param index: Index which contains the Company.
+        :return: List of companies in the EETC Data Hub database.
+        """
+
+        url = f"{self.base_url}/companies/"
+        params = {}
+
+        # add optional query params
+        if index:
+            params["index"] = index
+
+        # send the HTTP request to EETC Data Hub
+        response = self._send_http_request(url, params)
+
+        # process and return response data
+        response_data = response.json()
+
+        return response_data
